@@ -81,7 +81,7 @@
                     <div class="confidence-panel">
                         <span>{{ confidence|default(0) }}%</span>
                         <div class="confidence-bar">
-                            <div class="confidence-fill" style="width: {{ confidence|default(0) }}%"></div>
+                            <div class="confidence-fill" data-confidence="{{ confidence|default(0) }}"></div>
                         </div>
                     </div>
                 </div>
@@ -94,6 +94,7 @@
 <script>
     const fileInput = document.getElementById('image-upload');
     const fileNameLabel = document.getElementById('selected-file-name');
+    const confidenceFill = document.querySelector('.confidence-fill');
 
     fileInput.addEventListener('change', () => {
         const selectedFile = fileInput.files[0];
@@ -103,6 +104,11 @@
             fileNameLabel.textContent = 'No file selected yet';
         }
     });
+
+    if (confidenceFill) {
+        const widthValue = confidenceFill.dataset.confidence || '0';
+        confidenceFill.style.width = `${widthValue}%`;
+    }
 </script>
 
 </body>
