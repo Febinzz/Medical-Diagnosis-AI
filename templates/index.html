@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chest X-Ray Disease Detection</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="page-shell">
+    <div class="hero-panel">
+        <div class="hero-copy">
+            <h1>🩺 Chest X-Ray Disease Detection</h1>
+            <p class="subtitle">
+                Upload a Chest X-Ray image to classify it as
+                <span class="pill">COVID-19</span>
+                <span class="pill">Pneumonia</span>
+                <span class="pill">Normal</span>
+            </p>
+            <p class="hero-text">
+                Intelligent medical imaging with a smooth, responsive interface.
+            </p>
+            <p class="hero-text">
+                
+                It works best when you upload a valid chest X-ray photo.
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="upload-card">
+            <form action="/predict" method="POST" enctype="multipart/form-data" novalidate>
+                <label class="file-input-label" for="image-upload">
+                    <span>Choose a Chest X-Ray image</span>
+                    <span class="file-name" id="selected-file-name">No file selected yet</span>
+                    <input
+                        id="image-upload"
+                        type="file"
+                        name="image"
+                        accept="image/*">
+                </label>
+
+                <button type="submit" class="primary-button">
+                    🔍 Predict Disease
+                </button>
+            </form>
+
+            {% if error %}
+            <div class="message-box error-box">
+                <p>{{ error }}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if prediction %}
+        <div class="prediction-box">
+            <div class="prediction-header">
+                <div>
+                    <h2>Prediction Result</h2>
+                    <p class="status-tag">Detected</p>
+                </div>
+                <a href="/" class="secondary-button">Try Another Image</a>
+            </div>
+
+            <div class="result-grid">
+                <div class="image-panel">
+                    <img
+                        src="{{ image_url }}"
+                        alt="Uploaded Image"
+                        class="uploaded-image">
+                </div>
+                <div class="details-panel">
+                    <h3>{{ prediction }}</h3>
+                    {% if filename %}
+                    <p class="detail-copy">Uploaded file: <strong>{{ filename }}</strong></p>
+                    {% endif %}
+                    <p class="detail-copy">Confidence score based on model analysis.</p>
+                    <div class="confidence-panel">
+                        <span>{{ confidence|default(0) }}%</span>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" style="width: {{ confidence|default(0) }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    const fileInput = document.getElementById('image-upload');
+    const fileNameLabel = document.getElementById('selected-file-name');
+
+    fileInput.addEventListener('change', () => {
+        const selectedFile = fileInput.files[0];
+        if (selectedFile) {
+            fileNameLabel.textContent = selectedFile.name;
+        } else {
+            fileNameLabel.textContent = 'No file selected yet';
+        }
+    });
+</script>
+
+</body>
+</html>
